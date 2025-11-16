@@ -7,7 +7,33 @@ import time
 import random
 from typing import Dict, List
 import json
+import streamlit as st
 
+st.write("🔍 Checking dependencies...")
+
+try:
+    import plotly
+    st.success(f"✅ Plotly {plotly.__version__} installed")
+except Exception as e:
+    st.error(f"❌ Plotly error: {e}")
+    st.stop()
+
+try:
+    import pandas
+    st.success(f"✅ Pandas {pandas.__version__} installed")
+except Exception as e:
+    st.error(f"❌ Pandas error: {e}")
+
+try:
+    import numpy
+    st.success(f"✅ NumPy {numpy.__version__} installed")
+except Exception as e:
+    st.error(f"❌ NumPy error: {e}")
+
+st.write("✅ All dependencies OK! Continuing to app...")
+st.divider()
+
+# Your normal app code below...
 # Page configuration
 st.set_page_config(
     page_title="Multi-Chain DEX Arbitrage Bot",
