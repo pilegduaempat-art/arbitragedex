@@ -379,4 +379,4 @@ This software is provided "as is" without warranty of any kind. Trading cryptocu
 
 ⭐ Star this repo if you find it useful!
 
-[View Demo](https://your-app.streamlit.app) | [Report Bug](https://github.com/yourusername/multichain-arbitrage-bot/issues) | [Request Feature](https://github.com/yourusername/multichain-arbitrage-bot/issues)
+[View Demo](https://dexarbitrage.streamlit.app/) | [Report Bug](https://github.com/yourusername/multichain-arbitrage-bot/issues) | [Request Feature](https://github.com/yourusername/multichain-arbitrage-bot/issues)
