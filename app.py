@@ -150,6 +150,16 @@ if 'backtest_results' not in st.session_state:
 if 'alert_history' not in st.session_state:
     st.session_state.alert_history = []
 
+# ==================== HELPER FUNCTIONS ====================
+def safe_get(dictionary: Dict, key: str, default=0):
+    """Safely get value from dictionary with default"""
+    try:
+        if dictionary is None:
+            return default
+        return dictionary.get(key, default)
+    except (KeyError, AttributeError, TypeError):
+        return default
+
 # ==================== RPC HEALTH CHECKER ====================
 class RPCHealthChecker:
     def __init__(self):
@@ -1115,12 +1125,16 @@ def main():
                                 # Simulate execution (replace with real execution logic)
                                 time.sleep(2)
                                 
+                                opp_type = safe_get(opp, 'type', 'direct')
+                                amount = safe_get(opp, 'amount', 0)
+                                profit = safe_get(opp, 'profit', 0)
+                                
                                 trade_result = {
                                     'timestamp': datetime.now(),
-                                    'type': opp['type'],
-                                    'amount': opp['amount'],
-                                    'expected_profit': opp['profit'],
-                                    'actual_profit': opp['profit'] * 0.95,  # Simulate 5% slippage
+                                    'type': opp_type,
+                                    'amount': amount,
+                                    'expected_profit': profit,
+                                    'actual_profit': profit * 0.95,  # Simulate 5% slippage
                                     'gas_cost': 0.002,
                                     'success': True,
                                     'tx_hash': '0x' + 'a' * 64  # Simulated tx hash
@@ -1279,11 +1293,11 @@ def main():
                 st.metric("Total Trades", total_trades)
             
             with hist_col2:
-                successful = len([t for t in st.session_state.executed_trades if t.get('success')])
+                successful = len([t for t in st.session_state.executed_trades if safe_get(t, 'success', False)])
                 st.metric("Successful", successful)
             
             with hist_col3:
-                total_profit = sum([t.get('actual_profit', 0) for t in st.session_state.executed_trades])
+                total_profit = sum([safe_get(t, 'actual_profit', 0) for t in st.session_state.executed_trades if safe_get(t, 'success', False)])
                 st.metric("Total Profit", f"{total_profit:.4f} ETH")
             
             # Filters
@@ -1299,12 +1313,12 @@ def main():
             filtered_trades = st.session_state.executed_trades.copy()
             
             if filter_type:
-                filtered_trades = [t for t in filtered_trades if t.get('type') in filter_type]
+                filtered_trades = [t for t in filtered_trades if safe_get(t, 'type', '') in filter_type]
             
             if filter_success == "Success":
-                filtered_trades = [t for t in filtered_trades if t.get('success')]
+                filtered_trades = [t for t in filtered_trades if safe_get(t, 'success', False)]
             elif filter_success == "Failed":
-                filtered_trades = [t for t in filtered_trades if not t.get('success')]
+                filtered_trades = [t for t in filtered_trades if not safe_get(t, 'success', False)]
             
             # Display trades
             if filtered_trades:
